@@ -1,6 +1,5 @@
 package domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 public class Account extends CommonEntity<Long> {
 
     private String name;
@@ -19,14 +17,28 @@ public class Account extends CommonEntity<Long> {
 
     /**
      * Common constructor used to create new account data, will always set updateDateTime to null.
-     * @param id
-     * @param createDateTime
-     * @param name
-     * @param occupation
+     * @param id data id
+     * @param createDateTime creation timestamp
+     * @param name account name
+     * @param occupation job description
      */
     public Account(Long id, LocalDateTime createDateTime, String name, String occupation) {
         super(id, createDateTime, null);
         this.name = name;
         this.occupation = occupation;
+    }
+
+    /**
+     * Used in search
+     * @param id Account.id
+     */
+    public Account(Long id){
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "id: "+this.getId()+" name: "+this.getName()+ " occupation: "+this.getOccupation() +"\n"
+                + "created: "+ this.getCreateDateTime() +" updated: "+this.getUpdateDateTime()+"\n";
     }
 }
