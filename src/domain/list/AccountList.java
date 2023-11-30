@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class AccountList {
 
-    private static volatile List<Account> ACC_LIST = Arrays.asList(new Account(1L, LocalDateTime.now(), "John Doe", "012108", "112233", new BigDecimal("100")), new Account(1L, LocalDateTime.now(), "John Doe", "012108", "112233", new BigDecimal("100")));
+    private static List<Account> ACC_LIST = Arrays.asList(new Account(1L, LocalDateTime.now(), "John Doe", "012108", "112233", new BigDecimal("100")), new Account(1L, LocalDateTime.now(), "John Doe", "012108", "112233", new BigDecimal("100")));
 
-    public static synchronized List<Account> select(){
+    public static List<Account> select(){
         return ACC_LIST;
     }
 
