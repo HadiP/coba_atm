@@ -16,29 +16,36 @@ public class AppConstants {
             "3. $100\n" +
             "4. Other\n" +
             "5. Back\n" +
-            "Please choose option[5]:";
+            "Please choose option[5]: ";
     public static final String OTHER_WD_SCREEN = "Other Withdraw\n" +
-            "Enter amount to withdraw:";
-    public static final String CREATE_ACC_MSG = "Create Account selected!\nPlease fill or type the data as follow:\n[name, accountNumber, pin, balance]";
-    public static final String BYE = "Exit app..";
-    public static final String CREATE_OPT = "1";
-    public static final String SELECT_OPT_RGX = "2|2+ +(\\d|\\[+\\d+])";
-    public static final String EDIT_OPT_RGX = "3+ +(\\d|\\[+\\d+])";
-    public static final String DEL_OPT_RGX = "4+ +(\\d|\\[+\\d+])";
+            "Enter amount to withdraw: ";
+    public static final String SUMMARY_SCREEN = "Summary\n" +
+            "Date : %s\n" +
+            "Withdraw : $%s\n" +
+            "Balance : $%s\n" +
+            "\n" +
+            "1. Transaction \n" +
+            "2. Exit\n" +
+            "Choose option[2]: ";
     public static final String NUMERIC_ONLY_RGX = "^\\d+$";
-    public static final String EXIT_OPT = "Q";
 
     public static final String UNSUPPORTED_MSG = "Feature still under development.";
-    public static final String ACCOUNT_ADDED_MSG = "Account successfully added!";
-    public static final String SELECT_REQUESTED_DATA_MSG = "Select requested data.";
-    public static final String SPACE_SYM = " ";
     public static final String ERR_INVALID_ACCOUNT = "Invalid Account Number/PIN";
     public static final String ERR_MINIMUM_6_LENGTH = " should have 6 digits length";
     public static final String ERR_DIGIT = " should only contains numbers";
-    public static final String ERR_DATA_NOT_FOUND_MSG = "Unable to find requested data.";
-    public static final String BRACKET_SYM = "[";
     public static final String CONSOLE_LINE = "====================================================================================";
 
     public static final String FIELD_ACC_NUM = "Account Number";
     public static final String FIELD_PIN = "PIN";
+
+    /**
+     * Constant values for Transaction Menu
+     */
+    public static final String WITHDRAW = "1", TRANSFER = "2", EXIT = "3";
+    /**
+     * Constant values for Withdraw Menu
+     */
+    public static final String WD10 = "1", WD50 = "2", WD100 = "3", OTHER = "4", BACK = "5";
+    public static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss a";
+
 }

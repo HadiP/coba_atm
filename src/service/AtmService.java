@@ -6,10 +6,11 @@ public interface AtmService {
 
     boolean login(String pw, String rawPw);
 
-    String transactionScreen(Scanner sc);
+    void transactionScreen(Scanner sc, String accNum);
 
-    String transferScreen(Scanner sc);
+    boolean transferScreen(Scanner sc, String accNum);
 
-    void withdrawScreen(Scanner sc);
+    boolean withdrawScreen(Scanner sc, String accNum);
 
+    boolean validateAcc(String input, String fieldName);
 }

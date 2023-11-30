@@ -1,16 +1,11 @@
 package domain;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
  * Account class used as application user entity
  */
-@Getter
-@Setter
 public class Account extends CommonEntity<Long> {
 
     private String accountNumber;
@@ -49,6 +44,38 @@ public class Account extends CommonEntity<Long> {
      */
     public Account(String accNum){
         this.accountNumber = accNum;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     @Override
