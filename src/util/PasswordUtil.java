@@ -7,6 +7,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.util.stream.IntStream;
 
 /**
  * PasswordEncoder implementation
@@ -32,6 +33,17 @@ public class PasswordUtil implements PasswordEncoder {
 
     public boolean match(String hashed, String original) {
         return encode(original).equals(hashed);
+    }
+
+    /**
+     * Generate random number
+     * @return %d
+     */
+    public static String generateRandom(int digit){
+        final SecureRandom secureRandom = new SecureRandom();
+        return IntStream.iterate(0, i -> secureRandom.nextInt(10))
+                .limit(digit)
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
     }
 
 }

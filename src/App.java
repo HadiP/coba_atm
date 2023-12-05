@@ -27,7 +27,7 @@ public class App {
             String pin = sc.nextLine();
             if (atmService.validateAcc(accNum, FIELD_ACC_NUM) && atmService.validateAcc(pin, FIELD_PIN)) {
                 if (accExist == null || !accExist.getPin().equals(pin)) {
-                    System.out.println(ERR_INVALID_ACCOUNT);
+                    System.out.println(ERR_INVALID_ACCOUNT_NUMBER_PIN);
                 } else {
                     atmService.transactionScreen(sc, accNum);
                 }
