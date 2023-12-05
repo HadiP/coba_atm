@@ -1,11 +1,8 @@
 package service.impl;
 
-import com.github.kwhat.jnativehook.GlobalScreen;
-import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
+import constants.AppConstants;
 import domain.Account;
 import domain.list.AccountList;
-import listener.TransferNKeyListener;
 import service.AtmServiceAbs;
 import service.PasswordEncoder;
 import util.PasswordUtil;
@@ -18,7 +15,6 @@ import java.util.Scanner;
 import static constants.AppConstants.*;
 
 public class AtmServiceImpl extends AtmServiceAbs {
-
     public AtmServiceImpl(PasswordEncoder pwe) {
         super(pwe);
     }
@@ -49,71 +45,51 @@ public class AtmServiceImpl extends AtmServiceAbs {
     @Override
     public boolean transferScreen(Scanner sc, String accNum) {
         boolean exitStatus = false;
-        try {
-            //trf destination
-            System.out.print(TRANSFER_SCREEN[0]);
-            String dest = sc.nextLine();
-            if (!dest.matches(NUMERIC_ONLY_RGX) || AccountList.findByAccountNumber(dest) == null) {
-                System.out.println(ERR_INVALID_ACCOUNT);
-                return exitStatus;
-            }
-            //enable global screen and native key logger
-            GlobalScreen.registerNativeHook();
-            TransferNKeyListener listener = new TransferNKeyListener();
-            GlobalScreen.addNativeKeyListener(listener);
-            //start to listen to the event keyboard event
-            long end = System.currentTimeMillis() + 30000; //timeout in 30s
-            for (; ; ) {
-                if (TransferNKeyListener.EVENT_CANCELED.equals(listener.getEventStatus()) || System.currentTimeMillis() < end) {
-                    GlobalScreen.unregisterNativeHook();
-                    return exitStatus;
-                } else if(TransferNKeyListener.EVENT_EXIT.equals(listener.getEventStatus())){
-                    GlobalScreen.unregisterNativeHook();
-                    break;
-                }
-            }
-            //trf amounts
-            System.out.print(TRANSFER_SCREEN[1]);
-            String transfer = sc.nextLine();
-            if (!"".equals(transfer) && !transfer.matches(NUMERIC_ONLY_RGX)) {
-                System.out.println(ERR_INVALID_AMOUNTS);
-                //eventStatus = EVENT_CANCELED;
-            } else if (new BigDecimal(transfer).compareTo(new BigDecimal(1)) < 0) {
-                System.out.println("Minimum amount to transfer is $1");
-                //eventStatus = EVENT_CANCELED;
-            } else if (new BigDecimal(transfer).compareTo(new BigDecimal(1000)) > 0) {
-                System.out.println("Maximum amount to transfer is $1000");
+        //trf destination
+        System.out.print(TRANSFER_SCREEN[0]);
+        String dest = sc.nextLine();
+        if (SIMULATED_ESC_BTN.equals(dest)) {
+            return exitStatus;
+        } else if (!dest.matches(NUMERIC_ONLY_RGX) || AccountList.findByAccountNumber(dest) == null) {
+            System.out.println(ERR_INVALID_ACCOUNT);
+            return exitStatus;
+        }
+        //trf amounts
+        System.out.print(TRANSFER_SCREEN[1]);
+        String transfer = sc.nextLine();
+        if (!"".equals(transfer) && !transfer.matches(NUMERIC_ONLY_RGX)) {
+            System.out.println(ERR_INVALID_AMOUNTS);
+        } else if (new BigDecimal(transfer).compareTo(new BigDecimal(1)) < 0) {
+            System.out.println(ERR_MINIMUM_AMOUNT_1);
+        } else if (new BigDecimal(transfer).compareTo(new BigDecimal(1000)) > 0) {
+            System.out.println(ERR_MAXIMUM_AMOUNT_1000);
+        } else {
+            Account account = AccountList.findByAccountNumber(accNum);
+            BigDecimal trfAmt = new BigDecimal(transfer);
+            if (account.getBalance().compareTo(trfAmt) < 0) {
+                System.out.println(AppConstants.ERR_INSUFFICIENT_BALANCE + transfer);
                 //eventStatus = EVENT_CANCELED;
             } else {
-                Account account = AccountList.findByAccountNumber(accNum);
-                if (account.getBalance().compareTo(new BigDecimal(transfer)) < 0) {
-                    System.out.println("Insufficient balance $" + transfer);
-                    //eventStatus = EVENT_CANCELED;
+                String refNum = PasswordUtil.generateRandom(6);
+                System.out.printf(TRANSFER_SCREEN[2], refNum);
+                //reference number confirmation
+                if (!sc.nextLine().equals(refNum)) {
+                    System.out.println(ERR_REFERENCE_NUM);
                 } else {
-                    String refNum = PasswordUtil.generateRandom(6);
-                    System.out.printf(TRANSFER_SCREEN[2], refNum);
-                    //reference number confirmation
-                    if (!sc.nextLine().equals(refNum)) {
-                        System.out.println("Invalid Reference Number");
-                        //eventStatus = EVENT_CANCELED;
-                    } else {
-                        //confirm trf
-                        System.out.printf(TRANSFER_SCREEN[3]);
+                    //confirm trf
+                    System.out.printf(TRANSFER_SCREEN[3], dest, trfAmt, refNum);
+                    if(CONFIRM.equals(sc.nextLine())){
                         //deduct balance, and execute transfer
-                        BigDecimal trfAmt = new BigDecimal(transfer);
                         account.setBalance(account.getBalance().subtract(trfAmt));
                         Account destAcc = AccountList.findByAccountNumber(dest);
                         destAcc.setBalance(destAcc.getBalance().add(trfAmt));
                         summaryScreen(account.getBalance(), trfAmt, dest, refNum);
-                        String input = sc.nextLine();
-                        if ("".equals(input) || "2".equals(input)) {
-                           exitStatus = true;
+                        if (!CONTINUE.equals(sc.nextLine())) {
+                            exitStatus = true;
                         }
                     }
                 }
             }
-        } catch (NativeHookException e) {
-            e.printStackTrace();
         }
         return exitStatus;
     }
@@ -129,7 +105,7 @@ public class AtmServiceImpl extends AtmServiceAbs {
                 account.setBalance(withdraw(account.getBalance(), deduct));
                 summaryScreen(account.getBalance(), deduct);
                 input = sc.nextLine();
-                if (input.equals("1")) {
+                if (input.equals(CONTINUE)) {
                     break;
                 }
                 return true;
@@ -138,7 +114,7 @@ public class AtmServiceImpl extends AtmServiceAbs {
                 account.setBalance(withdraw(account.getBalance(), deduct));
                 summaryScreen(account.getBalance(), deduct);
                 input = sc.nextLine();
-                if (input.equals("1")) {
+                if (input.equals(CONTINUE)) {
                     break;
                 }
                 return true;
@@ -147,7 +123,7 @@ public class AtmServiceImpl extends AtmServiceAbs {
                 account.setBalance(withdraw(account.getBalance(), deduct));
                 summaryScreen(account.getBalance(), deduct);
                 input = sc.nextLine();
-                if (input.equals("1")) {
+                if (input.equals(CONTINUE)) {
                     break;
                 }
                 return true;
@@ -157,18 +133,18 @@ public class AtmServiceImpl extends AtmServiceAbs {
                 if (input.matches(NUMERIC_ONLY_RGX) && new BigDecimal(input).remainder(new BigDecimal(10)).compareTo(BigDecimal.ZERO) == 0) {
                     BigDecimal deduct = new BigDecimal(input);
                     if (deduct.compareTo(new BigDecimal(1000)) > 0) {
-                        System.out.println("Maximum amount to withdraw is $1000");
+                        System.out.println(ERR_MAX_AMOUNT_WITHDRAW_1000);
                     } else {
                         account.setBalance(withdraw(account.getBalance(), deduct));
                         summaryScreen(account.getBalance(), deduct);
                         input = sc.nextLine();
-                        if (input.equals("1")) {
+                        if (input.equals(CONTINUE)) {
                             break;
                         }
                         return true;
                     }
                 } else {
-                    System.out.println("Invalid Amount.");
+                    System.out.println(ERR_INVALID_AMOUNTS);
                 }
             } else if (input.isEmpty() || input.equals(BACK)) {
                 break;
@@ -187,10 +163,10 @@ public class AtmServiceImpl extends AtmServiceAbs {
     @Override
     public boolean validateAcc(String input, String fieldName) {
         if (input.length() < 6) {
-            System.out.println(fieldName + ERR_MINIMUM_6_LENGTH);
+            System.out.printf(ERR_MINIMUM_6_LENGTH, fieldName);
             return false;
         } else if (!input.matches(NUMERIC_ONLY_RGX)) {
-            System.out.println(fieldName + ERR_DIGIT);
+            System.out.printf(ERR_DIGIT, fieldName);
             return false;
         }
         return true;
@@ -198,7 +174,7 @@ public class AtmServiceImpl extends AtmServiceAbs {
 
     private BigDecimal withdraw(BigDecimal amt, BigDecimal deduct) {
         if (amt.compareTo(deduct) < 0) {
-            System.out.println("Insufficient balance $" + deduct.subtract(amt).toPlainString());
+            System.out.println(ERR_INSUFFICIENT_BALANCE + deduct.subtract(amt).toPlainString());
             return amt;
         }
         return amt.subtract(deduct);

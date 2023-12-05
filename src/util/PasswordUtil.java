@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 /**
  * PasswordEncoder implementation
  */
-public class PasswordUtil implements PasswordEncoder {
+public final class PasswordUtil implements PasswordEncoder {
 
     private static byte[] salt = null;
 

@@ -2,6 +2,7 @@ package domain.list;
 
 import domain.Account;
 import domain.CommonEntity;
+import util.PasswordUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,7 +26,10 @@ import java.util.List;
  */
 public class AccountList {
 
-    private static List<Account> ACC_LIST = Arrays.asList(new Account(1L, LocalDateTime.now(), "John Doe", "012108", "112233", new BigDecimal("100")), new Account(1L, LocalDateTime.now(), "John Doe", "012108", "112233", new BigDecimal("100")));
+    private static List<Account> ACC_LIST = Arrays.asList(
+            new Account(1L, LocalDateTime.now(), "John Doe", "112233", new PasswordUtil().encode("012108"), new BigDecimal("100")),
+            new Account(1L, LocalDateTime.now(), "Jane Doe", "112244", new PasswordUtil().encode("932012"), new BigDecimal("100"))
+    );
 
     public static List<Account> select(){
         return ACC_LIST;
