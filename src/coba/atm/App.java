@@ -23,12 +23,12 @@ public class App {
         AtmService atmService = new AtmServiceImpl();
         PasswordEncoder pwEncoder = new PasswordUtil();
         for (;;) {
-            System.out.print(WELCOME_SCREEN[0]);
+            System.out.print(WELCOME_SCREEN);
             Scanner sc = new Scanner(System.in);
             // account number
             String accNum = sc.nextLine();
             Account accExist = AccountList.findByAccountNumber(accNum);
-            System.out.print(WELCOME_SCREEN[1]);
+            System.out.print(WELCOME_SCREEN2);
             String pin = sc.nextLine();
             if (atmService.validateAcc(accNum, FIELD_ACC_NUM) && atmService.validateAcc(pin, FIELD_PIN)) {
                 if (accExist == null || !pwEncoder.match(accExist.getPin(), pin)) {

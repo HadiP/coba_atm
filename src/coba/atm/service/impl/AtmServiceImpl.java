@@ -25,19 +25,20 @@ public class AtmServiceImpl extends AtmServiceAbs {
 
     @Override
     public void transactionScreen(Scanner sc, String accNum) {
-        for (; ; ) {
+        boolean exitFlag = false;
+        while (!exitFlag) {
             System.out.print(TRX_SCREEN);
             String input = sc.nextLine();
             if (input.equals(WITHDRAW)) {
                 if (withdrawScreen(sc, accNum)) {
-                    break;
+                    exitFlag = true;
                 }
             } else if (input.equals(TRANSFER)) {
                 if (transferScreen(sc, accNum)) {
-                    break;
+                    exitFlag = true;
                 }
             } else if (input.isEmpty() || input.equals(EXIT)) {
-                break;
+                exitFlag = true;
             }
         }
     }
@@ -45,8 +46,8 @@ public class AtmServiceImpl extends AtmServiceAbs {
     @Override
     public boolean transferScreen(Scanner sc, String accNum) {
         boolean exitStatus = false;
-        //trf destination
-        System.out.print(TRANSFER_SCREEN[0]);
+        // trf destination
+        System.out.print(TRANSFER_SCREEN);
         String dest = sc.nextLine();
         if (SIMULATED_ESC_BTN.equals(dest)) {
             return exitStatus;
@@ -54,8 +55,8 @@ public class AtmServiceImpl extends AtmServiceAbs {
             System.out.println(ERR_INVALID_ACCOUNT);
             return exitStatus;
         }
-        //trf amounts
-        System.out.print(TRANSFER_SCREEN[1]);
+        // trf amounts
+        System.out.print(TRANSFER_SCREEN2);
         String transfer = sc.nextLine();
         if (!"".equals(transfer) && !transfer.matches(NUMERIC_ONLY_RGX)) {
             System.out.println(ERR_INVALID_AMOUNTS);
@@ -68,18 +69,17 @@ public class AtmServiceImpl extends AtmServiceAbs {
             BigDecimal trfAmt = new BigDecimal(transfer);
             if (account.getBalance().compareTo(trfAmt) < 0) {
                 System.out.println(AppConstants.ERR_INSUFFICIENT_BALANCE + transfer);
-                //eventStatus = EVENT_CANCELED;
             } else {
                 String refNum = PasswordUtil.generateRandom(6);
-                System.out.printf(TRANSFER_SCREEN[2], refNum);
-                //reference number confirmation
+                System.out.printf(TRANSFER_SCREEN3, refNum);
+                // reference number confirmation
                 if (!sc.nextLine().equals(refNum)) {
                     System.out.println(ERR_REFERENCE_NUM);
                 } else {
-                    //confirm trf
-                    System.out.printf(TRANSFER_SCREEN[3], dest, trfAmt, refNum);
-                    if(CONFIRM.equals(sc.nextLine())){
-                        //deduct balance, and execute transfer
+                    // confirm trf
+                    System.out.printf(TRANSFER_SCREEN4, dest, trfAmt, refNum);
+                    if (CONFIRM.equals(sc.nextLine())) {
+                        // deduct balance, and execute transfer
                         account.setBalance(account.getBalance().subtract(trfAmt));
                         Account destAcc = AccountList.findByAccountNumber(dest);
                         destAcc.setBalance(destAcc.getBalance().add(trfAmt));
@@ -94,61 +94,47 @@ public class AtmServiceImpl extends AtmServiceAbs {
         return exitStatus;
     }
 
+    private static final String[] FIXED_AMT = { "10", "50", "100", "Other" };
+
     @Override
     public boolean withdrawScreen(Scanner sc, String accNum) {
-        for (; ; ) {
+        boolean exitFlag = false;
+        boolean exitTxScreen = false;
+        while (!exitFlag) {
             System.out.print(WITHDRAW_SCREEN);
             String input = sc.nextLine();
             Account account = AccountList.findByAccountNumber(accNum);
-            if (input.equals(WD10)) {
-                BigDecimal deduct = new BigDecimal(10);
-                account.setBalance(withdraw(account.getBalance(), deduct));
-                summaryScreen(account.getBalance(), deduct);
-                input = sc.nextLine();
-                if (input.equals(CONTINUE)) {
-                    break;
+            if (input.matches(VALID_WITHDRAW_RGX) || input.isEmpty()) {
+                exitFlag = true;
+                if (input.matches(VALID_FIXED_WITHDRAW_RGX)) {
+                    exitTxScreen = withdrawFixedAmt(account, FIXED_AMT[Integer.parseInt(input) - 1], sc);
+                } else if (input.equals(OTHER)) {
+                    System.out.print(OTHER_WD_SCREEN);
+                    input = sc.nextLine();
+                    exitTxScreen = withdrawDynamicAmt(account, input, sc);
                 }
-                return true;
-            } else if (input.equals(WD50)) {
-                BigDecimal deduct = new BigDecimal(50);
-                account.setBalance(withdraw(account.getBalance(), deduct));
-                summaryScreen(account.getBalance(), deduct);
-                input = sc.nextLine();
-                if (input.equals(CONTINUE)) {
-                    break;
-                }
-                return true;
-            } else if (input.equals(WD100)) {
-                BigDecimal deduct = new BigDecimal(100);
-                account.setBalance(withdraw(account.getBalance(), deduct));
-                summaryScreen(account.getBalance(), deduct);
-                input = sc.nextLine();
-                if (input.equals(CONTINUE)) {
-                    break;
-                }
-                return true;
-            } else if (input.equals(OTHER)) {
-                System.out.print(OTHER_WD_SCREEN);
-                input = sc.nextLine();
-                if (input.matches(NUMERIC_ONLY_RGX) && new BigDecimal(input).remainder(new BigDecimal(10)).compareTo(BigDecimal.ZERO) == 0) {
-                    BigDecimal deduct = new BigDecimal(input);
-                    if (deduct.compareTo(new BigDecimal(1000)) > 0) {
-                        System.out.println(ERR_MAX_AMOUNT_WITHDRAW_1000);
-                    } else {
-                        account.setBalance(withdraw(account.getBalance(), deduct));
-                        summaryScreen(account.getBalance(), deduct);
-                        input = sc.nextLine();
-                        if (input.equals(CONTINUE)) {
-                            break;
-                        }
-                        return true;
-                    }
-                } else {
-                    System.out.println(ERR_INVALID_AMOUNTS);
-                }
-            } else if (input.isEmpty() || input.equals(BACK)) {
-                break;
             }
+        }
+        return exitTxScreen;
+    }
+
+    private boolean withdrawFixedAmt(Account account, String deduct, Scanner sc) {
+        BigDecimal bdDeduct = new BigDecimal(deduct);
+        account.setBalance(withdraw(account.getBalance(), bdDeduct));
+        summaryScreen(account.getBalance(), bdDeduct);
+        return !sc.nextLine().equals(CONTINUE);
+    }
+
+    private boolean withdrawDynamicAmt(Account account, String input, Scanner sc) {
+        if (input.matches(NUMERIC_ONLY_RGX)
+                && new BigDecimal(input).remainder(new BigDecimal(10)).compareTo(BigDecimal.ZERO) == 0) {
+            if (new BigDecimal(input).compareTo(new BigDecimal(1000)) > 0) {
+                System.out.println(ERR_MAX_AMOUNT_WITHDRAW_1000);
+            } else {
+                return withdrawFixedAmt(account, input, sc);
+            }
+        } else {
+            System.out.println(ERR_INVALID_AMOUNTS);
         }
         return false;
     }
@@ -180,10 +166,23 @@ public class AtmServiceImpl extends AtmServiceAbs {
         return amt.subtract(deduct);
     }
 
+    /**
+     * Withdraw summary screen
+     * @param balance
+     * @param deduct
+     */
     private void summaryScreen(BigDecimal balance, BigDecimal deduct) {
-        System.out.printf(SUMMARY_SCREEN, LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_PATTERN)), deduct, balance);
+        System.out.printf(SUMMARY_SCREEN, LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_PATTERN)), deduct,
+                balance);
     }
 
+    /**
+     * Transfer summary screen
+     * @param balance
+     * @param deduct
+     * @param destination
+     * @param reference
+     */
     private void summaryScreen(BigDecimal balance, BigDecimal deduct, String destination, String reference) {
         System.out.printf(SUMMARY_SCREEN_TRF, destination, deduct, reference, balance);
     }

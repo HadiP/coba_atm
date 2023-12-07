@@ -11,8 +11,9 @@ public class AppConstants {
         /**
          * Welcome screen
          */
-        public static final String[] WELCOME_SCREEN = new String[] { "\nEnter Account Number: ",
-                        "\nEnter PIN: " };
+        public static final String WELCOME_SCREEN = "\nEnter Account Number: ";
+        public static final String WELCOME_SCREEN2 = "\nEnter PIN: ";
+
         /**
          * Transaction screen
          */
@@ -20,6 +21,7 @@ public class AppConstants {
                         "2. Fund Transfer\n" +
                         "3. Exit\n" +
                         "Please choose option[3]: ";
+
         /**
          * Withdraw screen
          */
@@ -31,6 +33,10 @@ public class AppConstants {
                         "Please choose option[5]: ";
         public static final String OTHER_WD_SCREEN = "\nOther Withdraw\n" +
                         "Enter amount to withdraw: ";
+
+        /**
+         * Summary screen
+         */
         public static final String SUMMARY_SCREEN = "\nSummary\n" +
                         "Date : %s\n" +
                         "Withdraw : $%s\n" +
@@ -52,40 +58,40 @@ public class AppConstants {
         /**
          * Transfer screen
          */
-        public static final String[] TRANSFER_SCREEN = {
-                        // 0
-                        "\nPlease enter destination account and \n" +
-                                        "press enter to continue or \n" +
-                                        "press cancel (Esc) to go back to Transaction: ",
+        public static final String TRANSFER_SCREEN = "\nPlease enter destination account and \n" +
+                        "press enter to continue or \n" +
+                        "press cancel (Esc) to go back to Transaction: ";
 
-                        // 1
-                        "\nPlease enter transfer amount and press enter to continue or \n" +
-                                        "press enter to go back to Transaction: ",
+        public static final String TRANSFER_SCREEN2 = "\nPlease enter transfer amount and press enter to continue or \n"
+                        +
+                        "press enter to go back to Transaction: ";
 
-                        // 2
-                        "\nReference Number: %s\n" +
-                                        "press enter to continue or press enter to go back to Transaction: ",
-                        // 3
-                        "\nTransfer Confirmation\n" +
-                                        "Destination Account : %s\n" +
-                                        "Transfer Amount     : $%s\n" +
-                                        "Reference Number    : %s\n" +
-                                        "\n" +
-                                        "1. Confirm Trx\n" +
-                                        "2. Cancel Trx\n" +
-                                        "Choose option[2]: "
-
-        };
+        public static final String TRANSFER_SCREEN3 = "\nReference Number: %s\n" +
+                        "press enter to continue or press enter to go back to Transaction: ";
+        public static final String TRANSFER_SCREEN4 = "\nTransfer Confirmation\n" +
+                        "Destination Account : %s\n" +
+                        "Transfer Amount     : $%s\n" +
+                        "Reference Number    : %s\n" +
+                        "\n" +
+                        "1. Confirm Trx\n" +
+                        "2. Cancel Trx\n" +
+                        "Choose option[2]: ";
 
         /**
          * Constant values for Transaction Menu
          */
-        public static final String WITHDRAW = "1", TRANSFER = "2", EXIT = "3";
+        public static final String WITHDRAW = "1";
+        public static final String TRANSFER = "2";
+        public static final String EXIT = "3";
 
         /**
          * Constant values for Withdraw Menu
          */
-        public static final String WD10 = "1", WD50 = "2", WD100 = "3", OTHER = "4", BACK = "5";
+        public static final String WD10 = "1";
+        public static final String WD50 = "2";
+        public static final String WD100 = "3";
+        public static final String OTHER = "4";
+        public static final String BACK = "5";
         public static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss a";
 
         /**
@@ -112,6 +118,14 @@ public class AppConstants {
          * Other
          */
         public static final String NUMERIC_ONLY_RGX = "^\\d+$";
+        /**
+         * Valid input validation for withdraw screen 1-5
+         */
+        public static final String VALID_WITHDRAW_RGX = "^[1-5]$";
+        /**
+         * Valid input validation for fixed withdraw screen 1-3
+         */
+        public static final String VALID_FIXED_WITHDRAW_RGX = "^[1-3]$";
         public static final String ERR_INVALID_ACCOUNT_NUMBER_PIN = "\nInvalid Account Number/PIN";
         public static final String ERR_INVALID_ACCOUNT = "\nInvalid Account";
         public static final String ERR_INVALID_AMOUNTS = "\nInvalid Amounts";
