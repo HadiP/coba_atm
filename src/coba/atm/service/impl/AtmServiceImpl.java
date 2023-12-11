@@ -43,6 +43,18 @@ public class AtmServiceImpl extends AtmServiceAbs {
         }
     }
 
+    /**
+     * Transfer screen.
+     * Rule:
+     * - Valid input:
+     *   1. Transfer destination (valid account number).
+     *   2. Transfer amounts minimum $1 maximum $1000.
+     *   3. Reference number input (random 6 digits number), need to input same number as confirmation.
+     *   4. Confirmation 1:yes / 2:cancel (default 2).
+     *   5. Quit/continue to trx screen 1:continue / 2:quit (to welcome screen).
+     * 
+     * @return true (Quit to welcome screen) / false (Continue to trx screen)
+     */
     @Override
     public boolean transferScreen(Scanner sc, String accNum) {
         boolean exitStatus = false;
@@ -96,6 +108,15 @@ public class AtmServiceImpl extends AtmServiceAbs {
 
     private static final String[] FIXED_AMT = { "10", "50", "100", "Other" };
 
+    /**
+     * Withdraw screen.
+     * Valid input 1-5 (default 5):
+     * 1. Withdraw fixed ammounts of $10.
+     * 2. Withdraw fixed ammounts of $50.
+     * 3. Withdraw fixed ammounts of $100.
+     * 4. Other amounts.
+     * 5. Quit/exit to trx screen.
+     */
     @Override
     public boolean withdrawScreen(Scanner sc, String accNum) {
         boolean exitFlag = false;
@@ -118,13 +139,39 @@ public class AtmServiceImpl extends AtmServiceAbs {
         return exitTxScreen;
     }
 
+    /**
+     * Withdraw fixed amount.
+     * Rule:
+     * - Withdraw with certain ammount, if the deduction > balance return err message.
+     * 
+     * @param account
+     * @param deduct
+     * @param sc
+     * @return true (Quit to welcome screen) / false (Continue to trx screen)
+     */
     private boolean withdrawFixedAmt(Account account, String deduct, Scanner sc) {
         BigDecimal bdDeduct = new BigDecimal(deduct);
-        account.setBalance(withdraw(account.getBalance(), bdDeduct));
-        summaryScreen(account.getBalance(), bdDeduct);
-        return !sc.nextLine().equals(CONTINUE);
+        if (account.getBalance().compareTo(bdDeduct) >= 0) {
+            account.setBalance(account.getBalance().subtract(bdDeduct));
+            summaryScreen(account.getBalance(), bdDeduct);
+            return !sc.nextLine().equals(CONTINUE);
+        }
+        System.out.println(ERR_INSUFFICIENT_BALANCE + bdDeduct.subtract(account.getBalance()).toPlainString());
+        return false;
     }
 
+    /**
+     * Withdraw dynamic amounts.
+     * Rules:
+     * - Only accept nunber inputs.
+     * - Can only withdraw multiplication of 10.
+     * - Max withdraw amounts at once is $1000.
+     * 
+     * @param account
+     * @param input
+     * @param sc
+     * @return true (Quit to welcome screen) / false (Continue to trx screen)
+     */
     private boolean withdrawDynamicAmt(Account account, String input, Scanner sc) {
         if (input.matches(NUMERIC_ONLY_RGX)
                 && new BigDecimal(input).remainder(new BigDecimal(10)).compareTo(BigDecimal.ZERO) == 0) {
@@ -140,7 +187,7 @@ public class AtmServiceImpl extends AtmServiceAbs {
     }
 
     /**
-     * Validate account
+     * Validate account on welcome screen.
      *
      * @param input
      * @param fieldName
@@ -158,16 +205,10 @@ public class AtmServiceImpl extends AtmServiceAbs {
         return true;
     }
 
-    private BigDecimal withdraw(BigDecimal amt, BigDecimal deduct) {
-        if (amt.compareTo(deduct) < 0) {
-            System.out.println(ERR_INSUFFICIENT_BALANCE + deduct.subtract(amt).toPlainString());
-            return amt;
-        }
-        return amt.subtract(deduct);
-    }
-
     /**
-     * Withdraw summary screen
+     * Withdraw summary screen.
+     * Show detail of latest withdraw transaction.
+     * 
      * @param balance
      * @param deduct
      */
@@ -177,7 +218,9 @@ public class AtmServiceImpl extends AtmServiceAbs {
     }
 
     /**
-     * Transfer summary screen
+     * Transfer summary screen.
+     * Show detail of latest trf transaction.
+     * 
      * @param balance
      * @param deduct
      * @param destination

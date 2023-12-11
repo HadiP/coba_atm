@@ -12,13 +12,13 @@ public abstract class CommonEntity<T> {
     protected LocalDateTime createDateTime;
     protected LocalDateTime updateDateTime;
 
-    public CommonEntity(T id, LocalDateTime createDateTime, LocalDateTime updateDateTime) {
+    protected CommonEntity(T id, LocalDateTime createDateTime, LocalDateTime updateDateTime) {
         this.id = id;
         this.createDateTime = createDateTime;
         this.updateDateTime = updateDateTime;
     }
 
-    public CommonEntity() {
+    protected CommonEntity() {
         createDateTime = LocalDateTime.now();
     }
 

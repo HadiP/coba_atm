@@ -98,7 +98,13 @@ public class AppConstants {
          * Constant values for Transfer Menu
          */
         public static final String SIMULATED_ESC_BTN = "esc";
+        /**
+         * Continue to transaction screen from trf screen.
+         */
         public static final String CONTINUE = "1";
+        /**
+         * Confirmation of transfer.
+         */
         public static final String CONFIRM = "1";
 
         /**
@@ -114,8 +120,9 @@ public class AppConstants {
         public static final String ERR_MAXIMUM_AMOUNT_1000 = "\nMaximum amount to transfer is $1000";
         public static final String ERR_MINIMUM_AMOUNT_1 = "\nMinimum amount to transfer is $1";
 
+        // Other
         /**
-         * Other
+         * Numeric regex
          */
         public static final String NUMERIC_ONLY_RGX = "^\\d+$";
         /**
@@ -126,6 +133,9 @@ public class AppConstants {
          * Valid input validation for fixed withdraw screen 1-3
          */
         public static final String VALID_FIXED_WITHDRAW_RGX = "^[1-3]$";
+        /**
+         * Invalid error message on the login/wolcome screen.
+         */
         public static final String ERR_INVALID_ACCOUNT_NUMBER_PIN = "\nInvalid Account Number/PIN";
         public static final String ERR_INVALID_ACCOUNT = "\nInvalid Account";
         public static final String ERR_INVALID_AMOUNTS = "\nInvalid Amounts";
