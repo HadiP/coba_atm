@@ -11,7 +11,7 @@ public class AppConstants {
         /**
          * Welcome screen
          */
-        public static final String WELCOME_SCREEN = "\nEnter Account Number: ";
+        public static final String WELCOME_SCREEN = "Enter Account Number: ";
         public static final String WELCOME_SCREEN2 = "\nEnter PIN: ";
 
         /**
@@ -122,13 +122,17 @@ public class AppConstants {
 
         // Other
         /**
+         * linebreak regex
+         */
+        public static final String LINE_BREAK_ONLY_RGX = "^\\n|\\s";
+        /**
          * Numeric regex
          */
         public static final String NUMERIC_ONLY_RGX = "^\\d+$";
         /**
          * Valid input validation for withdraw screen 1-5
          */
-        public static final String VALID_WITHDRAW_RGX = "^[1-5]$";
+        public static final String VALID_WITHDRAW_RGX = "^[1-4]$";
         /**
          * Valid input validation for fixed withdraw screen 1-3
          */
@@ -136,11 +140,11 @@ public class AppConstants {
         /**
          * Invalid error message on the login/wolcome screen.
          */
-        public static final String ERR_INVALID_ACCOUNT_NUMBER_PIN = "\nInvalid Account Number/PIN";
-        public static final String ERR_INVALID_ACCOUNT = "\nInvalid Account";
-        public static final String ERR_INVALID_AMOUNTS = "\nInvalid Amounts";
-        public static final String ERR_MINIMUM_6_LENGTH = "\n%s should have 6 digits length";
-        public static final String ERR_DIGIT = "\n%s should only contains numbers";
+        public static final String ERR_INVALID_ACCOUNT_NUMBER_PIN = "Invalid Account Number/PIN";
+        public static final String ERR_INVALID_ACCOUNT = "Invalid Account";
+        public static final String ERR_INVALID_AMOUNTS = "Invalid Amounts";
+        public static final String ERR_MINIMUM_6_LENGTH = "%s should have 6 digits length";
+        public static final String ERR_DIGIT = "%s should only contains numbers";
         public static final String FIELD_ACC_NUM = "Account Number";
         public static final String FIELD_PIN = "PIN";
 }

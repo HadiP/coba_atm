@@ -2,7 +2,6 @@ package coba.atm.service.impl;
 
 import coba.atm.constants.AppConstants;
 import coba.atm.domain.Account;
-import coba.atm.domain.list.AccountList;
 import coba.atm.service.AtmServiceAbs;
 import coba.atm.service.PasswordEncoder;
 import coba.atm.util.PasswordUtil;
@@ -14,6 +13,7 @@ import java.util.Scanner;
 
 import static coba.atm.constants.AppConstants.*;
 
+@Deprecated
 public class AtmServiceImpl extends AtmServiceAbs {
     public AtmServiceImpl(PasswordEncoder pwe) {
         super(pwe);
@@ -63,7 +63,7 @@ public class AtmServiceImpl extends AtmServiceAbs {
         String dest = sc.nextLine();
         if (SIMULATED_ESC_BTN.equals(dest)) {
             return exitStatus;
-        } else if (!dest.matches(NUMERIC_ONLY_RGX) || AccountList.findByAccountNumber(dest) == null) {
+        } else if (!dest.matches(NUMERIC_ONLY_RGX) /*|| AccountList.findByAccountNumber(dest) == null*/) {
             System.out.println(ERR_INVALID_ACCOUNT);
             return exitStatus;
         }
@@ -77,9 +77,9 @@ public class AtmServiceImpl extends AtmServiceAbs {
         } else if (new BigDecimal(transfer).compareTo(new BigDecimal(1000)) > 0) {
             System.out.println(ERR_MAXIMUM_AMOUNT_1000);
         } else {
-            Account account = AccountList.findByAccountNumber(accNum);
+           // Account account = AccountList.findByAccountNumber(accNum);
             BigDecimal trfAmt = new BigDecimal(transfer);
-            if (account.getBalance().compareTo(trfAmt) < 0) {
+            if (false /*account.getBalance().compareTo(trfAmt) < 0*/) {
                 System.out.println(AppConstants.ERR_INSUFFICIENT_BALANCE + transfer);
             } else {
                 String refNum = PasswordUtil.generateRandom(6);
@@ -92,10 +92,10 @@ public class AtmServiceImpl extends AtmServiceAbs {
                     System.out.printf(TRANSFER_SCREEN4, dest, trfAmt, refNum);
                     if (CONFIRM.equals(sc.nextLine())) {
                         // deduct balance, and execute transfer
-                        account.setBalance(account.getBalance().subtract(trfAmt));
-                        Account destAcc = AccountList.findByAccountNumber(dest);
-                        destAcc.setBalance(destAcc.getBalance().add(trfAmt));
-                        summaryScreen(account.getBalance(), trfAmt, dest, refNum);
+                        //account.setBalance(account.getBalance().subtract(trfAmt));
+                        //Account destAcc = AccountList.findByAccountNumber(dest);
+                        //destAcc.setBalance(destAcc.getBalance().add(trfAmt));
+                        //summaryScreen(account.getBalance(), trfAmt, dest, refNum);
                         if (!CONTINUE.equals(sc.nextLine())) {
                             exitStatus = true;
                         }
@@ -124,15 +124,15 @@ public class AtmServiceImpl extends AtmServiceAbs {
         while (!exitFlag) {
             System.out.print(WITHDRAW_SCREEN);
             String input = sc.nextLine();
-            Account account = AccountList.findByAccountNumber(accNum);
+            //Account account = AccountList.findByAccountNumber(accNum);
             if (input.matches(VALID_WITHDRAW_RGX) || input.isEmpty()) {
                 exitFlag = true;
                 if (input.matches(VALID_FIXED_WITHDRAW_RGX)) {
-                    exitTxScreen = withdrawFixedAmt(account, FIXED_AMT[Integer.parseInt(input) - 1], sc);
+                    //exitTxScreen = withdrawFixedAmt(account, FIXED_AMT[Integer.parseInt(input) - 1], sc);
                 } else if (input.equals(OTHER)) {
                     System.out.print(OTHER_WD_SCREEN);
                     input = sc.nextLine();
-                    exitTxScreen = withdrawDynamicAmt(account, input, sc);
+                    //exitTxScreen = withdrawDynamicAmt(account, input, sc);
                 }
             }
         }
@@ -152,7 +152,7 @@ public class AtmServiceImpl extends AtmServiceAbs {
     private boolean withdrawFixedAmt(Account account, String deduct, Scanner sc) {
         BigDecimal bdDeduct = new BigDecimal(deduct);
         if (account.getBalance().compareTo(bdDeduct) >= 0) {
-            account.setBalance(account.getBalance().subtract(bdDeduct));
+            //account.setBalance(account.getBalance().subtract(bdDeduct));
             summaryScreen(account.getBalance(), bdDeduct);
             return !sc.nextLine().equals(CONTINUE);
         }
