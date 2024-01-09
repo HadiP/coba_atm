@@ -1,7 +1,5 @@
 package coba.atm.util;
 
-import coba.atm.service.PasswordEncoder;
-
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -13,7 +11,7 @@ import java.util.stream.IntStream;
 /**
  * PasswordEncoder implementation
  */
-public final class PasswordUtil implements PasswordEncoder {
+public final class PasswordUtil {
 
     private static byte[] salt = null;
 
