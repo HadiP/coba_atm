@@ -7,7 +7,6 @@ import coba.atm.exception.AccountNotFoundException;
 import coba.atm.exception.ValidationErrorException;
 import coba.atm.service.TransferService;
 import coba.atm.service.impl.TransferServiceImpl;
-import coba.atm.util.Pair;
 import coba.atm.util.PasswordUtil;
 
 import java.util.Scanner;
@@ -18,8 +17,8 @@ public class TransferView {
 
     final TransferService service = new TransferServiceImpl();
 
-    public Pair<State, AccountList> transactionScreen(AccountList accountList, Account currentAccount) {
-        Pair<State, AccountList> resp = new Pair<>(State.TRANSACTION, accountList);
+    public State transferScreen(AccountList accountList, Account currentAccount) {
+        State resp = State.TRANSACTION;
         Scanner sc = new Scanner(System.in);
         System.out.print(TRANSFER_SCREEN);
         String input = sc.nextLine();
@@ -52,14 +51,13 @@ public class TransferView {
                     if (CONFIRM.equals(sc.nextLine())) {
                         State s = service.transferFund(accountList, currentAccount, destinationAccount, trfAmt);
                         if(State.SUMMARY.equals(s)) {
-                            s = SummaryView.summaryScreen(currentAccount.getBalance(), trfAmt,
+                            resp = SummaryView.summaryScreen(currentAccount.getBalance(), trfAmt,
                                     currentAccount.getAccountNumber(), refNum);
-                            resp = new Pair<>(s, accountList);
                         }
                     }
                 }
             } catch (ValidationErrorException | AccountNotFoundException e) {
-                resp = new Pair<>(State.TRANSFER, accountList);
+                resp = State.TRANSFER;
             }
         }
         return resp;

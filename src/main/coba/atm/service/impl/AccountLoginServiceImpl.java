@@ -8,6 +8,8 @@ import coba.atm.exception.ValidationErrorException;
 import coba.atm.service.AccountLoginService;
 import coba.atm.util.Pair;
 
+import java.util.Optional;
+
 public class AccountLoginServiceImpl implements AccountLoginService {
 
     /**
@@ -19,15 +21,18 @@ public class AccountLoginServiceImpl implements AccountLoginService {
      * @return pair of state & selected account
      */
     @Override
-    public Pair<State, Account> login(AccountList accountList, String accountNumber, String pin) {
+    public Optional<Account> login(AccountList accountList, String accountNumber, String pin) {
+        Optional<Account> optResp;
         try {
             Account account = accountList.findByAccountNumber(accountNumber);
-            if(!account.validatePin(pin)){
-                return new Pair<>(State.LOGIN, null);
+            if(account.validatePin(pin)){
+                optResp = Optional.of(account);
+            } else {
+                optResp = Optional.empty();
             }
-            return new Pair<>(State.TRANSACTION, account);
-        } catch (ValidationErrorException | AccountNotFoundException e) {
-            return new Pair<>(State.LOGIN, null);
+        } catch (ValidationErrorException | AccountNotFoundException ignored) {
+            optResp = Optional.empty();
         }
+        return optResp;
     }
 }

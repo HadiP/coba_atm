@@ -5,8 +5,10 @@ import coba.atm.domain.Account;
 import coba.atm.domain.list.AccountList;
 import coba.atm.util.Pair;
 
+import java.util.Optional;
+
 public interface AccountLoginService {
 
-    Pair<State, Account> login(AccountList accountList, String accountNumber, String pin);
+    Optional<Account> login(AccountList accountList, String accountNumber, String pin);
 
 }

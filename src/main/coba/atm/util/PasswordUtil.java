@@ -7,6 +7,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
@@ -26,13 +27,13 @@ public final class PasswordUtil implements PasswordEncoder {
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             return DatatypeConverter.printHexBinary(factory.generateSecret(spec).getEncoded());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return null;
     }
 
     public boolean match(String hashed, String original) {
-        return encode(original).equals(hashed);
+        return Objects.requireNonNull(encode(original)).equals(hashed);
     }
 
     /**

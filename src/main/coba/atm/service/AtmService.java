@@ -1,7 +1,7 @@
 package coba.atm.service;
 
 import java.util.Scanner;
-
+@Deprecated
 public interface AtmService {
 
     boolean login(String pw, String rawPw);

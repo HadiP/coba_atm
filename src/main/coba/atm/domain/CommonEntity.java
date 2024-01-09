@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
  * Common class for entity.
  * @param <T> id of entity
  */
+@SuppressWarnings("unused")
 public abstract class CommonEntity<T> {
     protected T id;
     protected LocalDateTime createDateTime;

@@ -87,11 +87,7 @@ public class AppConstants {
         /**
          * Constant values for Withdraw Menu
          */
-        public static final String WD10 = "1";
-        public static final String WD50 = "2";
-        public static final String WD100 = "3";
         public static final String OTHER = "4";
-        public static final String BACK = "5";
         public static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss a";
 
         /**
@@ -122,10 +118,6 @@ public class AppConstants {
 
         // Other
         /**
-         * linebreak regex
-         */
-        public static final String LINE_BREAK_ONLY_RGX = "^\\n|\\s";
-        /**
          * Numeric regex
          */
         public static final String NUMERIC_ONLY_RGX = "^\\d+$";
@@ -140,11 +132,11 @@ public class AppConstants {
         /**
          * Invalid error message on the login/wolcome screen.
          */
-        public static final String ERR_INVALID_ACCOUNT_NUMBER_PIN = "Invalid Account Number/PIN";
+        //public static final String ERR_INVALID_ACCOUNT_NUMBER_PIN = "Invalid Account Number/PIN";
         public static final String ERR_INVALID_ACCOUNT = "Invalid Account";
         public static final String ERR_INVALID_AMOUNTS = "Invalid Amounts";
         public static final String ERR_MINIMUM_6_LENGTH = "%s should have 6 digits length";
         public static final String ERR_DIGIT = "%s should only contains numbers";
-        public static final String FIELD_ACC_NUM = "Account Number";
-        public static final String FIELD_PIN = "PIN";
+        //public static final String FIELD_ACC_NUM = "Account Number";
+        //public static final String FIELD_PIN = "PIN";
 }

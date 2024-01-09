@@ -8,10 +8,7 @@ import coba.atm.util.PasswordUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static coba.atm.constants.AppConstants.ERR_INVALID_ACCOUNT;
 
@@ -37,7 +34,12 @@ public class AccountList {
         );
     }
 
-    private List<Account> accList = null;
+    public AccountList(Account... accounts) {
+        this();
+        accList.addAll(Arrays.asList(accounts));
+    }
+
+    private List<Account> accList = new ArrayList<>();
 
     public List<Account> select() {
         return accList;
