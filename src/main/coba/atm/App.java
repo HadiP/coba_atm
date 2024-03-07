@@ -34,8 +34,8 @@ public class App {
                 TransactionView txView = new TransactionView();
                 state = txView.transactionScreen();
             } else if(state.equals(State.TRANSFER)){
-                TransferView trfView = new TransferView();
-                state = trfView.transferScreen(accountRepo, currentAccount);
+                TransferView trfView = new TransferView(accountRepo);
+                state = trfView.transferScreen(currentAccount);
             } else if(state.equals(State.WITHDRAW)){
                 WithdrawView withdrawView = new WithdrawView();
                 state = withdrawView.withdrawScreen(accountRepo, currentAccount);

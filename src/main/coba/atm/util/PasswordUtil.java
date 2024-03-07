@@ -9,7 +9,9 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
- * PasswordEncoder implementation
+ * Password utility class.
+ * Used to hash the password to prevent data tempering,
+ * using PBKDF2 With HMAC SHA1 algorithm.
  */
 public final class PasswordUtil {
 
@@ -32,17 +34,6 @@ public final class PasswordUtil {
 
     public boolean match(String hashed, String original) {
         return Objects.requireNonNull(encode(original)).equals(hashed);
-    }
-
-    /**
-     * Generate random number
-     * @return %d
-     */
-    public static String generateRandom(int digit){
-        final SecureRandom secureRandom = new SecureRandom();
-        return IntStream.iterate(0, i -> secureRandom.nextInt(10))
-                .limit(digit)
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
     }
 
 }

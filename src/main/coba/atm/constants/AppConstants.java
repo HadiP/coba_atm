@@ -102,6 +102,10 @@ public class AppConstants {
          * Confirmation of transfer.
          */
         public static final String CONFIRM = "1";
+        /**
+         * OK (indicate validation success)
+         */
+        public static final String OK = "Ok";
 
         /**
          * Error msg for withdraw

@@ -2,6 +2,8 @@ package coba.atm.domain.list;
 
 import coba.atm.domain.Account;
 import coba.atm.domain.CommonEntity;
+import coba.atm.domain.validation.AccountValidation;
+import coba.atm.domain.wrapper.Pair;
 import coba.atm.exception.AccountNotFoundException;
 import coba.atm.exception.ValidationErrorException;
 import coba.atm.util.PasswordUtil;
@@ -39,7 +41,7 @@ public class AccountList {
         accList.addAll(Arrays.asList(accounts));
     }
 
-    private List<Account> accList = new ArrayList<>();
+    private final List<Account> accList;
 
     public List<Account> select() {
         return accList;
@@ -69,15 +71,17 @@ public class AccountList {
      * @return Account
      */
     public Account findByAccountNumber(String accNum) throws ValidationErrorException, AccountNotFoundException {
-        if(!Account.checkAccountNum(accNum)) {
-            throw new ValidationErrorException();
+        //todo: for later update account number checking will be done in service flow, so every method use this method
+        // need to check the account number with separated function
+        Pair<Boolean, String> res = AccountValidation.getInstance().checkAccountNum(accNum);
+        if(res.getO()) {
+            Comparator<Account> idCmp = Comparator.comparing(Account::getAccountNumber);
+            int idx = Collections.binarySearch(accList, new Account(accNum), idCmp);
+            if (idx >= 0) return new Account(accList.get(idx));
+            throw new AccountNotFoundException(ERR_INVALID_ACCOUNT);
+        } else {
+            throw new ValidationErrorException(res.getO2());
         }
-        Comparator<Account> idCmp = Comparator.comparing(Account::getAccountNumber);
-        int idx = Collections.binarySearch(accList, new Account(accNum), idCmp);
-        if (idx >= 0) return new Account(accList.get(idx));
-
-        System.out.println(ERR_INVALID_ACCOUNT);
-        throw new AccountNotFoundException(ERR_INVALID_ACCOUNT);
     }
 
     /**

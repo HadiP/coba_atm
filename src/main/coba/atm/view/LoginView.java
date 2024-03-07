@@ -13,9 +13,8 @@ import static coba.atm.constants.AppConstants.WELCOME_SCREEN2;
 
 public class LoginView {
 
-    private final AccountLoginService loginService = new AccountLoginServiceImpl();
-
     public Optional<Account> loginScreen(AccountList accList){
+        final AccountLoginService loginService = new AccountLoginServiceImpl();
         System.out.print(WELCOME_SCREEN);
         Scanner sc = new Scanner(System.in);
         // account number

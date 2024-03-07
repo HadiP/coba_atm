@@ -1,14 +1,10 @@
 package coba.atm.view;
 
 import coba.atm.constants.State;
-import coba.atm.domain.Account;
-import coba.atm.domain.list.AccountList;
-import coba.atm.util.Pair;
 
 import java.util.Scanner;
 
 import static coba.atm.constants.AppConstants.*;
-import static coba.atm.constants.AppConstants.EXIT;
 
 public class TransactionView {
 

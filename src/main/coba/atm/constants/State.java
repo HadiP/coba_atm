@@ -5,10 +5,19 @@ package coba.atm.constants;
  */
 public enum State {
 
-    LOGIN,
-    TRANSACTION,
-    WITHDRAW,
-    TRANSFER,
-    SUMMARY
+    LOGIN("login"),
+    TRANSACTION("transaction"),
+    WITHDRAW("withdraw"),
+    TRANSFER("transfer"),
+    SUMMARY("summary");
 
+    State(String val){
+        this.val = val;
+    }
+    private final String val;
+
+    @Override
+    public String toString() {
+        return val;
+    }
 }
